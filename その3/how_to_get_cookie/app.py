@@ -1,11 +1,11 @@
-from flask import Flask, make_response, render_template
+from flask import Flask, make_response, render_template, request
 
 app = Flask(__name__)
 
 @app.route('/')
 def index():
     try:
-        count = request.cookie.get('count')
+        count = request.cookies.get('count')
         if count != None:
             count = int(count) + 1
         else:
