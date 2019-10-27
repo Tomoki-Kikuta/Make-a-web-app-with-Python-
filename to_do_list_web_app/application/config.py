@@ -1,0 +1,2 @@
+SQLALCHEMY_DATABASE_URI = "sqlite:///to_do_list.db"
+SECRET_KEY = "b'f\r\xee\x9aH\xb1\xed\xf3\xa4\x10\x1f\x9bJ2r\xdf\x12\x915\xa2%}\xbb\xa0'"

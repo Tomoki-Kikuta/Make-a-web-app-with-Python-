@@ -1,40 +1,30 @@
-from flask import Flask, request, Response, abort, render_template, redirect, url_for
-from flask_login import LoginManager, login_user, logout_user, login_required, UserMixin
+from flask import request, Response, abort, render_template, redirect, url_for
+from flask_login import LoginManager, login_user, logout_user, login_required
 from collections import defaultdict
-from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from werkzeug.utils import secure_filename
 from datetime import datetime
+from application import app, db
+from application.models import User
 
 
-app = Flask(__name__)
 login_manager = LoginManager()
 login_manager.init_app(app)
-app.config['SECRET_KEY'] = "secret"
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://localhost/testdb"
-db = SQLAlchemy(app)
 migrate = Migrate(app, db)
-
-
-class User(UserMixin, db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(64), index=True, unique=True)
-    password = db.Column(db.String(64))
-    # def __repr__(self):
-    #     return '<User %r>' % self.username
-
 
 
 @login_manager.user_loader
 def load_user(user_id):
-    return 
-
+    return User.get(int(user_id))
 
 @app.route('/')
-def home():
-    return render_template('home.html')
+def to_home():
+    return redirect(url_for("home"))
 
+
+@app.route("/home/")
+def home():
+    return render_template("home.html")
 
 @app.route('/register/', methods=["GET", "POST"])
 def register():
@@ -82,10 +72,3 @@ def protected(user):
     return render_template("form.html", username=user)
 
 
-@app.cli.command('initdb')
-def initdb_command():
-    db.create_all()
-
-
-if __name__=='__main__':
-    app.run(debug=False)
